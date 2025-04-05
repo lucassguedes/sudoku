@@ -1,0 +1,7 @@
+# Compilar
+
+
+`cmake .`
+
+
+`cmake --build .`
