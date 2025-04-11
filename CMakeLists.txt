@@ -11,7 +11,7 @@ set(CMAKE_C_STANDARD 17)
 set(CMAKE_C_STANDARD_REQUIRED True)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "./bin")
-add_compile_options(-g -Wall -lX11 -lXxf86vm -lXrandr -lpthread -lXi -ldl -lXinerama -lXcursor)
+add_compile_options(-g3 -Wall -lX11 -lXxf86vm -lXrandr -lpthread -lXi -ldl -lXinerama -lXcursor)
 
 # Set default build type to Debug if not specified
 if(NOT CMAKE_BUILD_TYPE)
