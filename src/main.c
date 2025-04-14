@@ -34,8 +34,6 @@ int main(int argc, char **argv)
     sudoku_data *data = (sudoku_data *)malloc(sizeof(sudoku_data));
 
     data->matrix = matrix;
-    data->row = 5;
-    data->column = 8;
 
     pthread_create(&lcid, NULL, row_checker, &data);
     pthread_create(&ccid, NULL, column_checker, &data);
@@ -45,12 +43,9 @@ int main(int argc, char **argv)
         int line = i*3; //primeira linha do quadrado
         for(int j = 0; j < 3; j++){
             int column = j*3; //primeira coluna do quadrado
-            // cria struct de argumentos que serão passados para a função 
-            square_args * args = (square_args*)malloc(sizeof(square_args));
-            args->data = data;
-            args->line = line;
-            args->col = column;
-            pthread_create(&scid[thread_counter], NULL, square_checker, args);
+            data->line = line;
+            data->col = column;
+            pthread_create(&scid[thread_counter], NULL, square_checker, data);
             thread_counter++;
         }
     }

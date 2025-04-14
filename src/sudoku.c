@@ -95,10 +95,9 @@ void* column_checker(void* arg){
  * constantes SUDOKU_INVALID ou SUDOKU_VALID.
  */
  void* square_checker(void * arg){
-    square_args* args = (square_args*)arg;
-    sudoku_data* data = args->data;
-    int col = args->col;
-    int line = args->line;
+    sudoku_data* data = (sudoku_data*)arg;
+    int col = data->col;
+    int line = data->line;
 
     uint16_t square_status = 0;
     

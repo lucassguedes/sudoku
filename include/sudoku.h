@@ -13,16 +13,10 @@ enum{
 };
 
 typedef struct{
-    int row;
-    int column;
+    int line;
+    int col;
     int** matrix;
 }sudoku_data;
-
-typedef struct {
-    sudoku_data* data;
-    int col;
-    int line;
-} square_args;
 
 extern int resp;
 
