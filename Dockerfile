@@ -20,4 +20,4 @@ WORKDIR /usr/src/app/build
 RUN cmake .. && make
 
 # Define the default command to run your executable
-CMD ["../bin/sudoku"]
+CMD ["./bin/sudoku"]
