@@ -2,6 +2,7 @@
 #define __VALIDATOR_H__
 #include <stdlib.h>
 #include <stdint.h>
+#include <pthread.h>
 #include <math.h>
 
 #define DIM 9
