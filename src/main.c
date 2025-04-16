@@ -15,7 +15,7 @@ int resp = SUDOKU_VALID;
 int main(int argc, char **argv)
 {
     if (!argv[1]){
-        printf("Inclua um número que representa um caso teste como argumento.\n Ex: ./bin/sudoku 2\n");
+        printf("Inclua um número que representa um caso teste como argumento.\n Ex: ./build/bin/sudoku 2\n");
         exit(0);
     }
     int test_case = atoi(argv[1]);
@@ -32,6 +32,7 @@ int main(int argc, char **argv)
 
     switch(test_case){
         case 1: case_1(values);break;
+        case 2: case_2(values); break;
         default: printf("\033[0;31mDigite um caso válido\033[0m\n"); break;
     }
     return 0;

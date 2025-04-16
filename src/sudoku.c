@@ -1,86 +1,46 @@
 #include "sudoku.h"
 #include "utils.h"
 
+
+int row_checker(sudoku_data * data);
+int column_checker(sudoku_data * data);
+
+
 /**
- * Nome: row_checker
+ * Nome: all_row_checker
  * Argumentos: sudoku_data* data
  * Descrição: Esta função verifica todas as linhas da matriz
  * do   sudoku   em   busca  de  uma  configuração  inválida. 
- * Retorno: Retorna  um  ponteiro  para  int contendo uma das
+ * Retorno:
  * constantes SUDOKU_INVALID ou SUDOKU_VALID.
  */
-void* row_checker(void* arg){
+void* all_row_checker(void* arg){
     sudoku_data* data = *(sudoku_data**)arg;
-    //int* res = (int*)malloc(sizeof(int)); 
-
-    /**
-     * row_status:
-     * O   número   inteiro  de  16  bits   do   row_status
-     * representa    quais    números    existem   na linha 
-     * atual.   Cada  bit  em  nível  lógico  alto,  dentre
-     * os  9   menos  significativos, representam um número
-     * que  está   presente na linha. Bits que correspondem
-     * a números que não estão na linha permanecem em nível
-     * lógico baixo.
-     * 
-     * Exemplo: Se a linha tiver apenas os números 5 e 9,
-     * o valor em line_status será:
-     * 
-     * 272 (decimal) = 0000000100010000 (binário)
-     */
-    uint16_t row_status; 
 
     for(int row = 0; row < DIM; row++){
-        row_status = 0;
-        for(int column = 0; column < DIM; column++){
-            /**
-             * Aqui verificamos se o número atual já foi visto na linha.
-             * Fazemos isso através de uma operação AND bitwise.
-             */
-            if(row_status & (int)pow(2, data->matrix[row][column] - 1))
-            {
-                printf("\033[0;31mA linha %d é inválida!\033[0m\n", row+1);
-                resp = SUDOKU_INVALID;
-            }
-
-            row_status |= (int)pow(2, data->matrix[row][column] - 1);
-        }
+        data->line = row;
+        int ans = row_checker(data);
+        if(ans) resp = SUDOKU_INVALID;
     }
 
     pthread_exit(0);
 }
 
 /**
- * Nome: column_checker
+ * Nome: all_column_checker
  * Argumentos: sudoku_data* data
  * Descrição: Esta função verifica todas as colunas da matriz
  * do   sudoku   em   busca  de  uma  configuração  inválida. 
- * Retorno: Retorna  um  ponteiro  para  int contendo uma das
- * constantes SUDOKU_INVALID ou SUDOKU_VALID.
+ * Retorno: 
  */
-
-void* column_checker(void* arg){
+void* all_column_checker(void* arg){
     sudoku_data* data = *(sudoku_data**)arg;
     //int* res = (int*)malloc(sizeof(int)); 
 
-    /*Funciona da mesma forma que o row_status*/
-    uint16_t column_status; 
-
     for(int column = 0; column < DIM; column++){
-        column_status = 0;
-        for(int row = 0; row < DIM; row++){
-            /**
-             * Aqui verificamos se o número atual já foi visto na coluna.
-             * Fazemos isso através de uma operação AND bitwise.
-             */
-            if(column_status & (int)pow(2, data->matrix[row][column] - 1))
-            {
-                printf("\033[0;31mA coluna %d é inválida!\033[0m\n", column+1);
-                resp = SUDOKU_INVALID;
-            }
-
-            column_status |= (int)pow(2, data->matrix[row][column] - 1);
-        }
+        data->col = column;
+        int ans = column_checker(data);
+        if(ans) resp = SUDOKU_INVALID;
     }
     pthread_exit(0);
 }
@@ -90,8 +50,7 @@ void* column_checker(void* arg){
  * Argumentos: sudoku_data* data, a linha do primeiro elemento do quadrado, a coluna do primeiro elemento do quadrado
  * Descrição: Esta função verifica um quadrado da matriz
  * do   sudoku   em   busca  de  uma  configuração  inválida. 
- * Retorno: Retorna  um  ponteiro  para  int contendo uma das
- * constantes SUDOKU_INVALID ou SUDOKU_VALID.
+ * Retorno: 
  */
  void* square_checker(void * arg){
     sudoku_data* data = (sudoku_data*)arg;
@@ -115,6 +74,31 @@ void* column_checker(void* arg){
     pthread_exit(0);
  }
 
+/**
+ * Nome: one_column_checker
+ * Argumentos: sudoku_data* data
+ * Descrição: Esta função será passada para a thread e verifica uma coluna da matriz 
+ * Retorno: 
+ */
+ void * one_column_checker(void * arg){
+    sudoku_data * data = (sudoku_data*)arg;
+    int ans = column_checker(data);
+    if(ans) resp = SUDOKU_INVALID;
+    pthread_exit(0);
+ }
+
+ /**
+ * Nome: one_row_checker
+ * Argumentos: sudoku_data* data
+ * Descrição: Esta função será passada para a thread e verifica uma linha da matriz 
+ * Retorno: 
+ */
+ void * one_row_checker(void * arg){
+    sudoku_data * data = (sudoku_data*)arg;
+    int ans = row_checker(data);
+    if(ans) resp = SUDOKU_INVALID;
+    pthread_exit(0);
+ }
 
 int** initialize_sudoku_matrix(int* values){
     int **matrix = (int **)malloc(sizeof(int *) * DIM);
@@ -130,4 +114,81 @@ int** initialize_sudoku_matrix(int* values){
     }
 
     return matrix;
+}
+
+/**
+ * Nome: row_checker
+ * Argumentos: sudoku_data* data
+ * Descrição: Esta função verifica uma linha da matriz
+ * do   sudoku   em   busca  de  uma  configuração  inválida. 
+ * Retorno: Retorna  um  ponteiro  para  int contendo uma das
+ * constantes SUDOKU_INVALID ou SUDOKU_VALID.
+ */
+
+ int row_checker(sudoku_data * data){
+   
+    int row = data->line;
+    uint16_t row_status = 0;  
+
+    /**
+     * row_status:
+     * O   número   inteiro  de  16  bits   do   row_status
+     * representa    quais    números    existem   na linha 
+     * atual.   Cada  bit  em  nível  lógico  alto,  dentre
+     * os  9   menos  significativos, representam um número
+     * que  está   presente na linha. Bits que correspondem
+     * a números que não estão na linha permanecem em nível
+     * lógico baixo.
+     * 
+     * Exemplo: Se a linha tiver apenas os números 5 e 9,
+     * o valor em line_status será:
+     * 
+     * 272 (decimal) = 0000000100010000 (binário)
+     */
+
+    for(int column = 0; column < DIM; column++){
+        /**
+         * Aqui verificamos se o número atual já foi visto na linha.
+         * Fazemos isso através de uma operação AND bitwise.
+         */
+        if(row_status & (int)pow(2, data->matrix[row][column] - 1))
+        {
+            printf("\033[0;31mA linha %d é inválida!\033[0m\n", row+1);
+            return SUDOKU_INVALID;
+        }
+        
+        row_status |= (int)pow(2, data->matrix[row][column] - 1);
+    }
+    return SUDOKU_VALID;
+}
+
+/**
+ * Nome: column_checker
+ * Argumentos: sudoku_data* data
+ * Descrição: Esta função verifica uma linha da coluna
+ * do   sudoku   em   busca  de  uma  configuração  inválida. 
+ * Retorno: Retorna  um  ponteiro  para  int contendo uma das
+ * constantes SUDOKU_INVALID ou SUDOKU_VALID.
+ */
+
+int column_checker(sudoku_data * data){
+    int column = data->col;
+    uint16_t column_status = 0; 
+
+    /*Funciona da mesma forma que o row_status*/
+
+    for(int row = 0; row < DIM; row++){
+        /**
+         * Aqui verificamos se o número atual já foi visto na coluna.
+         * Fazemos isso através de uma operação AND bitwise.
+         */
+        if(column_status & (int)pow(2, data->matrix[row][column] - 1))
+        {
+            printf("\033[0;31mA coluna %d é inválida!\033[0m\n", column+1);
+            return SUDOKU_INVALID;
+        }
+
+        column_status |= (int)pow(2, data->matrix[row][column] - 1);
+    }
+    return SUDOKU_VALID;
 }

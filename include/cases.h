@@ -7,5 +7,6 @@
 #include "sudoku.h"
 
 void case_1(int * values);
+void case_2(int* values);
 
 #endif 
