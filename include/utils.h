@@ -3,7 +3,7 @@
 #include <stdio.h>
 
 void show_matrix(int** matrix, int dim);
-
+int which_square(int, int);
 
 
 

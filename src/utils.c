@@ -9,3 +9,7 @@ void show_matrix(int** matrix, int dim)
         printf("\n");
     }
 }
+
+int which_square(int line, int column){
+    return (line/3)*3 + column/3;
+}

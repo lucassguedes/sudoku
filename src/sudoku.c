@@ -39,14 +39,13 @@ void* row_checker(void* arg){
              */
             if(row_status & (int)pow(2, data->matrix[row][column] - 1))
             {
-                printf("\033[0;31mA linha %d é inválida!\033[0m\n", row);
+                printf("\033[0;31mA linha %d é inválida!\033[0m\n", row+1);
                 resp = SUDOKU_INVALID;
             }
 
             row_status |= (int)pow(2, data->matrix[row][column] - 1);
         }
     }
-
 
     pthread_exit(0);
 }
@@ -76,7 +75,7 @@ void* column_checker(void* arg){
              */
             if(column_status & (int)pow(2, data->matrix[row][column] - 1))
             {
-                printf("\033[0;31mA coluna %d é inválida!\033[0m\n", column);
+                printf("\033[0;31mA coluna %d é inválida!\033[0m\n", column+1);
                 resp = SUDOKU_INVALID;
             }
 
@@ -100,7 +99,6 @@ void* column_checker(void* arg){
     int line = data->line;
 
     uint16_t square_status = 0;
-    
     for(int i = line; i < line+3; i++){
         for(int j = col; j < col+3; j++){
             /**
@@ -108,13 +106,12 @@ void* column_checker(void* arg){
              * Fazemos isso através de uma operação AND bitwise.
             **/
             if(square_status & (int)pow(2, data->matrix[i][j] - 1)){
-                printf("\033[0;31mO quadrado tal é inválida!\033[0m\n");
+                printf("\033[0;31mO quadrado %d é inválido!\033[0m\n", which_square(line, col)+1);
                 resp = SUDOKU_INVALID;
             }
             square_status |= (int)pow(2, data->matrix[i][j] -1);
         }
     }
-    
     pthread_exit(0);
  }
 
