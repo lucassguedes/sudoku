@@ -32,7 +32,7 @@ int main(int argc, char **argv)
     int** matrix = initialize_sudoku_matrix(values);
 
     sudoku_data *data = (sudoku_data *)malloc(sizeof(sudoku_data));
-
+    sudoku_data *data_squares[DIM];
     data->matrix = matrix;
 
     pthread_create(&lcid, NULL, row_checker, &data);
@@ -43,9 +43,12 @@ int main(int argc, char **argv)
         int line = i*3; //primeira linha do quadrado
         for(int j = 0; j < 3; j++){
             int column = j*3; //primeira coluna do quadrado
-            data->line = line;
-            data->col = column;
-            pthread_create(&scid[thread_counter], NULL, square_checker, data);
+
+            data_squares[thread_counter] = (sudoku_data *)malloc(sizeof(sudoku_data));
+            data_squares[thread_counter]->matrix = matrix;
+            data_squares[thread_counter]->line = line;
+            data_squares[thread_counter]->col = column;
+            pthread_create(&scid[thread_counter], NULL, square_checker, data_squares[thread_counter]);
             thread_counter++;
         }
     }
@@ -75,6 +78,8 @@ int main(int argc, char **argv)
     free(data);
     free(lc_status);
     free(cc_status);
+    for(int i = 0; i < DIM; i++)
+        free(data_squares[i]);
 
     return 0;
 }
