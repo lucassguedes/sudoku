@@ -3,6 +3,7 @@
 #include <pthread.h>
 #include "sudoku.h"
 #include "cases.h"
+#include "data.h"
 
 /**
  * Nome: Sudoku Solution Validator
@@ -14,6 +15,13 @@ int resp = SUDOKU_VALID;
 
 int main(int argc, char **argv)
 {
+
+    // SudokuInstance* instances = read_dataset(argv[1]);
+
+    // for(int i = 0; i < MAX_INSTANCES; i++){
+    //     print_instance(&instances[i]);
+    // }
+
     if (!argv[1]){
         printf("Inclua um número que representa um caso teste como argumento.\n Ex: ./build/bin/sudoku 2\n");
         exit(0);
