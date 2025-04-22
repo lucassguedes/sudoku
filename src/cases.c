@@ -9,13 +9,13 @@ void case_1(int * values){
 
     int** matrix = initialize_sudoku_matrix(values);
 
-    sudoku_data *data = (sudoku_data *)malloc(sizeof(sudoku_data));
+    ThreadParam *data = (ThreadParam *)malloc(sizeof(ThreadParam));
 
     data->instances = (SudokuInstance*)malloc(sizeof(SudokuInstance)); //Apenas uma instância
     data->instances[0].matrix = matrix;
 
 
-    sudoku_data *data_squares[DIM];
+    ThreadParam *data_squares[DIM];
     
 
     pthread_create(&lcid, NULL, all_row_checker, &data);
@@ -28,7 +28,7 @@ void case_1(int * values){
         for(int j = 0; j < 3; j++){
             int column = j*3; //primeira coluna do quadrado
 
-            data_squares[thread_counter] = (sudoku_data *)malloc(sizeof(sudoku_data));
+            data_squares[thread_counter] = (ThreadParam *)malloc(sizeof(ThreadParam));
             data_squares[thread_counter]->instances = (SudokuInstance*)malloc(sizeof(SudokuInstance)); //Apenas uma instância
             data_squares[thread_counter]->instances[0].matrix = matrix;
 
@@ -62,14 +62,15 @@ void case_1(int * values){
         free(matrix[i]);
     }
     free(matrix);
-    destroy_sudoku_data(data, false);
+    destroy_thread_param(data, false);
     free(lc_status);
     free(cc_status);
     for(int i = 0; i < DIM; i++)
         free(sc_status[i]);
+    free(sc_status);
 
     for(int i = 0; i < DIM; i++)
-        destroy_sudoku_data(data_squares[i], false);
+        destroy_thread_param(data_squares[i], false);
     
 }
 
@@ -77,9 +78,9 @@ void case_2(int * values){
 
     int** matrix = initialize_sudoku_matrix(values);
 
-    sudoku_data * data_columns[DIM];
-    sudoku_data * data_lines[DIM];
-    sudoku_data * data_squares[DIM];
+    ThreadParam * data_columns[DIM];
+    ThreadParam * data_lines[DIM];
+    ThreadParam * data_squares[DIM];
 
     pthread_t lcid[DIM]; // ID da thread de verificação das linhas
     pthread_t ccid[DIM]; // ID da thread de verificação das colunas
@@ -88,7 +89,7 @@ void case_2(int * values){
     //CODIGO DE UMA THREAD POR COLUNA
 
     for(int col = 0; col < DIM; col++){
-        data_columns[col] = (sudoku_data *)malloc(sizeof(sudoku_data));
+        data_columns[col] = (ThreadParam *)malloc(sizeof(ThreadParam));
         data_columns[col]->instances = (SudokuInstance*)malloc(sizeof(SudokuInstance)); //Apenas uma instância
         data_columns[col]->instances[0].matrix = matrix;
         data_columns[col]->col = col;
@@ -96,7 +97,7 @@ void case_2(int * values){
     }
 
     for(int row = 0; row < DIM; row++){
-        data_lines[row] = (sudoku_data *)malloc(sizeof(sudoku_data));
+        data_lines[row] = (ThreadParam *)malloc(sizeof(ThreadParam));
         data_lines[row]->instances = (SudokuInstance*)malloc(sizeof(SudokuInstance)); //Apenas uma instância
         data_lines[row]->instances[0].matrix = matrix;
         data_lines[row]->line = row;
@@ -109,7 +110,7 @@ void case_2(int * values){
         for(int j = 0; j < 3; j++){
             int column = j*3; //primeira coluna do quadrado
 
-            data_squares[thread_counter] = (sudoku_data *)malloc(sizeof(sudoku_data));
+            data_squares[thread_counter] = (ThreadParam *)malloc(sizeof(ThreadParam));
             data_squares[thread_counter]->instances = (SudokuInstance*)malloc(sizeof(SudokuInstance)); //Apenas uma instância
             data_squares[thread_counter]->instances[0].matrix = matrix;
             data_squares[thread_counter]->line = line;
@@ -145,8 +146,8 @@ void case_2(int * values){
     free(lc_status);
 
     for(int i = 0; i < DIM; i++){
-        destroy_sudoku_data(data_columns[i], false);
-        destroy_sudoku_data(data_lines[i], false);
-        destroy_sudoku_data(data_squares[i], false);
+        destroy_thread_param(data_columns[i], false);
+        destroy_thread_param(data_lines[i], false);
+        destroy_thread_param(data_squares[i], false);
     }
 }

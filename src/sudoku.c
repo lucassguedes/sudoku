@@ -2,16 +2,16 @@
 #include "utils.h"
 
 
-int row_checker(sudoku_data * data);
-int column_checker(sudoku_data * data);
+int row_checker(ThreadParam * data);
+int column_checker(ThreadParam * data);
 
 /**
- * Esta  função  serve para destruir estruturas do tipo sudoku_data.
+ * Esta  função  serve para destruir estruturas do tipo ThreadParam.
  * O parâmetro destroy_matrix determina se a matriz também deve ser
  * destruída  (há  casos  em que ela não deve ser destruida, pois é 
  * compartilhada por múltiplos objetos).
  */
-void destroy_sudoku_data(sudoku_data* data, bool destroy_matrix){
+void destroy_thread_param(ThreadParam* data, bool destroy_matrix){
     for(int i = 0; i < MAX_INSTANCES; i++){
         if(destroy_matrix){
             for(int j = 0; j < DIM; j++){
@@ -27,14 +27,14 @@ void destroy_sudoku_data(sudoku_data* data, bool destroy_matrix){
 
 /**
  * Nome: all_row_checker
- * Argumentos: sudoku_data* data
+ * Argumentos: ThreadParam* data
  * Descrição: Esta função verifica todas as linhas da matriz
  * do   sudoku   em   busca  de  uma  configuração  inválida. 
  * Retorno:
  * constantes SUDOKU_INVALID ou SUDOKU_VALID.
  */
 void* all_row_checker(void* arg){
-    sudoku_data* data = *(sudoku_data**)arg;
+    ThreadParam* data = *(ThreadParam**)arg;
 
     for(int row = 0; row < DIM; row++){
         data->line = row;
@@ -47,13 +47,13 @@ void* all_row_checker(void* arg){
 
 /**
  * Nome: all_column_checker
- * Argumentos: sudoku_data* data
+ * Argumentos: ThreadParam* data
  * Descrição: Esta função verifica todas as colunas da matriz
  * do   sudoku   em   busca  de  uma  configuração  inválida. 
  * Retorno: 
  */
 void* all_column_checker(void* arg){
-    sudoku_data* data = *(sudoku_data**)arg;
+    ThreadParam* data = *(ThreadParam**)arg;
     //int* res = (int*)malloc(sizeof(int)); 
 
     for(int column = 0; column < DIM; column++){
@@ -66,13 +66,13 @@ void* all_column_checker(void* arg){
 
 /**
  * Nome: square_checker
- * Argumentos: sudoku_data* data, a linha do primeiro elemento do quadrado, a coluna do primeiro elemento do quadrado
+ * Argumentos: ThreadParam* data, a linha do primeiro elemento do quadrado, a coluna do primeiro elemento do quadrado
  * Descrição: Esta função verifica um quadrado da matriz
  * do   sudoku   em   busca  de  uma  configuração  inválida. 
  * Retorno: 
  */
  void* square_checker(void * arg){
-    sudoku_data* data = (sudoku_data*)arg;
+    ThreadParam* data = (ThreadParam*)arg;
     int col = data->col;
     int line = data->line;
 
@@ -97,12 +97,12 @@ void* all_column_checker(void* arg){
 
 /**
  * Nome: one_column_checker
- * Argumentos: sudoku_data* data
+ * Argumentos: ThreadParam* data
  * Descrição: Esta função será passada para a thread e verifica uma coluna da matriz 
  * Retorno: 
  */
  void * one_column_checker(void * arg){
-    sudoku_data * data = (sudoku_data*)arg;
+    ThreadParam * data = (ThreadParam*)arg;
     int ans = column_checker(data);
     if(ans) resp = SUDOKU_INVALID;
     pthread_exit(0);
@@ -110,12 +110,12 @@ void* all_column_checker(void* arg){
 
  /**
  * Nome: one_row_checker
- * Argumentos: sudoku_data* data
+ * Argumentos: ThreadParam* data
  * Descrição: Esta função será passada para a thread e verifica uma linha da matriz 
  * Retorno: 
  */
  void * one_row_checker(void * arg){
-    sudoku_data * data = (sudoku_data*)arg;
+    ThreadParam * data = (ThreadParam*)arg;
     int ans = row_checker(data);
     if(ans) resp = SUDOKU_INVALID;
     pthread_exit(0);
@@ -139,14 +139,14 @@ int** initialize_sudoku_matrix(int* values){
 
 /**
  * Nome: row_checker
- * Argumentos: sudoku_data* data
+ * Argumentos: ThreadParam* data
  * Descrição: Esta função verifica uma linha da matriz
  * do   sudoku   em   busca  de  uma  configuração  inválida. 
  * Retorno: Retorna  um  ponteiro  para  int contendo uma das
  * constantes SUDOKU_INVALID ou SUDOKU_VALID.
  */
 
- int row_checker(sudoku_data * data){
+ int row_checker(ThreadParam * data){
    
     int row = data->line;
     uint16_t row_status = 0;  
@@ -186,14 +186,14 @@ int** initialize_sudoku_matrix(int* values){
 
 /**
  * Nome: column_checker
- * Argumentos: sudoku_data* data
+ * Argumentos: ThreadParam* data
  * Descrição: Esta função verifica uma linha da coluna
  * do   sudoku   em   busca  de  uma  configuração  inválida. 
  * Retorno: Retorna  um  ponteiro  para  int contendo uma das
  * constantes SUDOKU_INVALID ou SUDOKU_VALID.
  */
 
-int column_checker(sudoku_data * data){
+int column_checker(ThreadParam * data){
     int column = data->col;
     uint16_t column_status = 0; 
     int** matrix = data->instances[0].matrix; //Considerando que há apenas uma instância

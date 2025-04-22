@@ -13,11 +13,14 @@ enum{
     SUDOKU_INVALID
 };
 
+/*Esta estrutura contém todos os parâmetros necessários para
+  a execução de um teste.
+*/
 typedef struct{
     int line;
     int col;
     SudokuInstance* instances; //Lista de instâncias
-}sudoku_data;
+}ThreadParam; 
 
 extern int resp;
 
@@ -31,7 +34,7 @@ void* one_row_checker(void * arg);
 int** initialize_sudoku_matrix(int* values);
 
 
-void destroy_sudoku_data(sudoku_data* data, bool destroy_matrix);
+void destroy_thread_param(ThreadParam* data, bool destroy_matrix);
 
 
 
