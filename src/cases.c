@@ -47,11 +47,13 @@ void case_1(SudokuInstance* instances, int n_instances){
     }
     
     
-    if(resp == SUDOKU_VALID){
-        printf("\033[0;32mO jogo é válido!\033[0m\n");
-    }else{
-        printf("\033[0;31mO jogo não é válido!\033[0m\n");
+    int n_valid = 0;
+    for(int i = 0; i < MAX_INSTANCES; i++){
+        if(instances[i].valid){
+            n_valid++;
+        }
     }
+    printf("\033[0;35mInstâncias válidas:\033[0m %d/%d\n", n_instances, MAX_INSTANCES);
     
     destroy_thread_param(data, false);
     free(lc_status);
@@ -117,11 +119,16 @@ void case_2(SudokuInstance* instances, int n_instances){
         pthread_join(scid[i], sc_status[i]);
     }
 
-    if(resp == SUDOKU_VALID){
-        printf("\033[0;32mO jogo é válido!\033[0m\n");
-    }else{
-        printf("\033[0;31mO jogo não é válido!\033[0m\n");
+    int n_valid = 0;
+    for(int i = 0; i < MAX_INSTANCES; i++){
+        if(instances[i].valid){
+            n_valid++;
+        }
     }
+
+    printf("\033[0;35mInstâncias válidas:\033[0m %d/%d\n", n_instances, MAX_INSTANCES);
+
+
     free(cc_status);
     free(sc_status);
     free(lc_status);
