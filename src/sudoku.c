@@ -5,6 +5,25 @@
 int row_checker(sudoku_data * data);
 int column_checker(sudoku_data * data);
 
+/**
+ * Esta  função  serve para destruir estruturas do tipo sudoku_data.
+ * O parâmetro destroy_matrix determina se a matriz também deve ser
+ * destruída  (há  casos  em que ela não deve ser destruida, pois é 
+ * compartilhada por múltiplos objetos).
+ */
+void destroy_sudoku_data(sudoku_data* data, bool destroy_matrix){
+    for(int i = 0; i < MAX_INSTANCES; i++){
+        if(destroy_matrix){
+            for(int j = 0; j < DIM; j++){
+                free(data->instances[i].matrix[j]);
+            }
+            free(data->instances[i].matrix);
+        }
+    }
+    free(data->instances);
+    free(data);
+}
+
 
 /**
  * Nome: all_row_checker
@@ -57,6 +76,8 @@ void* all_column_checker(void* arg){
     int col = data->col;
     int line = data->line;
 
+    int** matrix = data->instances[0].matrix; //Considerando que há apenas uma instância
+
     uint16_t square_status = 0;
     for(int i = line; i < line+3; i++){
         for(int j = col; j < col+3; j++){
@@ -64,11 +85,11 @@ void* all_column_checker(void* arg){
              * Aqui verificamos se o numero atual já foi visto no quadrado.
              * Fazemos isso através de uma operação AND bitwise.
             **/
-            if(square_status & (int)pow(2, data->matrix[i][j] - 1)){
+            if(square_status & (int)pow(2,matrix[i][j] - 1)){
                 printf("\033[0;31mO quadrado %d é inválido!\033[0m\n", which_square(line, col)+1);
                 resp = SUDOKU_INVALID;
             }
-            square_status |= (int)pow(2, data->matrix[i][j] -1);
+            square_status |= (int)pow(2,matrix[i][j] -1);
         }
     }
     pthread_exit(0);
@@ -129,6 +150,7 @@ int** initialize_sudoku_matrix(int* values){
    
     int row = data->line;
     uint16_t row_status = 0;  
+    int** matrix = data->instances[0].matrix; //Considerando que há apenas uma instância
 
     /**
      * row_status:
@@ -151,13 +173,13 @@ int** initialize_sudoku_matrix(int* values){
          * Aqui verificamos se o número atual já foi visto na linha.
          * Fazemos isso através de uma operação AND bitwise.
          */
-        if(row_status & (int)pow(2, data->matrix[row][column] - 1))
+        if(row_status & (int)pow(2, matrix[row][column] - 1))
         {
             printf("\033[0;31mA linha %d é inválida!\033[0m\n", row+1);
             return SUDOKU_INVALID;
         }
         
-        row_status |= (int)pow(2, data->matrix[row][column] - 1);
+        row_status |= (int)pow(2, matrix[row][column] - 1);
     }
     return SUDOKU_VALID;
 }
@@ -174,6 +196,7 @@ int** initialize_sudoku_matrix(int* values){
 int column_checker(sudoku_data * data){
     int column = data->col;
     uint16_t column_status = 0; 
+    int** matrix = data->instances[0].matrix; //Considerando que há apenas uma instância
 
     /*Funciona da mesma forma que o row_status*/
 
@@ -182,13 +205,13 @@ int column_checker(sudoku_data * data){
          * Aqui verificamos se o número atual já foi visto na coluna.
          * Fazemos isso através de uma operação AND bitwise.
          */
-        if(column_status & (int)pow(2, data->matrix[row][column] - 1))
+        if(column_status & (int)pow(2, matrix[row][column] - 1))
         {
             printf("\033[0;31mA coluna %d é inválida!\033[0m\n", column+1);
             return SUDOKU_INVALID;
         }
 
-        column_status |= (int)pow(2, data->matrix[row][column] - 1);
+        column_status |= (int)pow(2, matrix[row][column] - 1);
     }
     return SUDOKU_VALID;
 }
