@@ -42,7 +42,6 @@ SudokuInstance* read_dataset(char* filepath){
             for(int i = 0; i < DIM*DIM; i++){
                 byte = getc(file);
             }
-            printf("\n");
             /*Adicionando nova instância à lista de instâncias*/
             currline = currcol = 0;
             continue;

@@ -6,21 +6,21 @@ int row_checker(ThreadParam * data);
 int column_checker(ThreadParam * data);
 
 /**
- * Esta  função  serve para destruir estruturas do tipo ThreadParam.
- * O parâmetro destroy_matrix determina se a matriz também deve ser
- * destruída  (há  casos  em que ela não deve ser destruida, pois é 
- * compartilhada por múltiplos objetos).
+ * Esta   função  serve  para  destruir  estruturas  do  tipo  ThreadParam.
+ * O parâmetro destroy_instances determina se as instâncias também deve ser
+ * destruídas  (há  casos  em  que elas  não devem ser destruidas, pois são 
+ * compartilhadas por múltiplos objetos).
  */
-void destroy_thread_param(ThreadParam* data, bool destroy_matrix){
-    for(int i = 0; i < MAX_INSTANCES; i++){
-        if(destroy_matrix){
+void destroy_thread_param(ThreadParam* data, bool destroy_instances){
+    if(destroy_instances){
+        for(int i = 0; i < MAX_INSTANCES; i++){
             for(int j = 0; j < DIM; j++){
                 free(data->instances[i].matrix[j]);
             }
             free(data->instances[i].matrix);
         }
+        free(data->instances);
     }
-    free(data->instances);
     free(data);
 }
 

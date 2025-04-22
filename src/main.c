@@ -22,26 +22,30 @@ int main(int argc, char **argv)
     //     print_instance(&instances[i]);
     // }
 
-    if (!argv[1]){
-        printf("Inclua um número que representa um caso teste como argumento.\n Ex: ./build/bin/sudoku 2\n");
+    if (argc < 3){
+        printf("\033[0;31mERRO:\033[0m Parâmetros insuficientes! Inclua como argumentos o camimho para os dados e um número que represente um caso teste.\n Ex: ./build/bin/sudoku ./sudoku.csv 2\n");
         exit(0);
     }
-    int test_case = atoi(argv[1]);
-    /*Estado inicial da matriz*/
-    int values[] = {5, 3, 0, 0, 7, 0, 0, 0, 0,
-                    6, 0, 0, 1, 9, 5, 0, 0, 0,
-                    0, 9, 8, 0, 0, 0, 0, 6, 0,
-                    8, 0, 0, 0, 6, 0, 0, 0, 3,
-                    4, 0, 0, 8, 0, 3, 0, 0, 1,
-                    7, 0, 0, 0, 2, 0, 0, 0, 6,
-                    0, 6, 0, 0, 0, 0, 2, 8, 0,
-                    0, 0, 0, 4, 1, 9, 0, 0, 5,
-                    0, 0, 0, 0, 8, 0, 0, 7, 9};
+    char* data_filepath = argv[1];
+    int test_case = atoi(argv[2]);
+
+    SudokuInstance* instances = read_dataset(data_filepath);
+
+    print_instance(&instances[0]);
 
     switch(test_case){
-        case 1: case_1(values);break;
-        case 2: case_2(values); break;
+        case 1: case_1(instances, MAX_INSTANCES);break;
+        case 2: case_2(instances, MAX_INSTANCES); break;
         default: printf("\033[0;31mDigite um caso válido\033[0m\n"); break;
     }
+
+
+    for(int i = 0; i < MAX_INSTANCES; i++){
+        for(int j = 0; j < DIM; j++){
+            free(instances[i].matrix[j]);
+        }
+        free(instances[i].matrix);
+    }
+    free(instances);
     return 0;
 }

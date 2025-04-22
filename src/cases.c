@@ -1,19 +1,13 @@
 #include "cases.h"
 
-void case_1(int * values){
+void case_1(SudokuInstance* instances, int n_instances){
 
     pthread_t lcid; // ID da thread de verificação das linhas
     pthread_t ccid; // ID da thread de verificação das colunas
     pthread_t scid[DIM]; // array de ID das threads de verificação dos quadrados
 
-
-    int** matrix = initialize_sudoku_matrix(values);
-
     ThreadParam *data = (ThreadParam *)malloc(sizeof(ThreadParam));
-
-    data->instances = (SudokuInstance*)malloc(sizeof(SudokuInstance)); //Apenas uma instância
-    data->instances[0].matrix = matrix;
-
+    data->instances = instances; //Apenas uma instância
 
     ThreadParam *data_squares[DIM];
     
@@ -29,20 +23,22 @@ void case_1(int * values){
             int column = j*3; //primeira coluna do quadrado
 
             data_squares[thread_counter] = (ThreadParam *)malloc(sizeof(ThreadParam));
-            data_squares[thread_counter]->instances = (SudokuInstance*)malloc(sizeof(SudokuInstance)); //Apenas uma instância
-            data_squares[thread_counter]->instances[0].matrix = matrix;
+            data_squares[thread_counter]->instances = instances;
 
 
             data_squares[thread_counter]->line = line;
             data_squares[thread_counter]->col = column;
             pthread_create(&scid[thread_counter], NULL, square_checker, data_squares[thread_counter]);
+
             thread_counter++;
         }
     }
 
     void *lc_status = NULL;
     void *cc_status = NULL;
-    void ** sc_status = (void **)malloc(sizeof(void *)*9);
+    void ** sc_status = (void **)malloc(sizeof(void *)*DIM);
+
+    for(int i = 0; i < DIM; i++)sc_status[i] = NULL;
 
     pthread_join(lcid, &lc_status);
     pthread_join(ccid, &cc_status);
@@ -57,11 +53,6 @@ void case_1(int * values){
         printf("\033[0;31mO jogo não é válido!\033[0m\n");
     }
     
-
-    for(int i = 0; i < DIM; i++){
-        free(matrix[i]);
-    }
-    free(matrix);
     destroy_thread_param(data, false);
     free(lc_status);
     free(cc_status);
@@ -74,9 +65,7 @@ void case_1(int * values){
     
 }
 
-void case_2(int * values){
-
-    int** matrix = initialize_sudoku_matrix(values);
+void case_2(SudokuInstance* instances, int n_instances){
 
     ThreadParam * data_columns[DIM];
     ThreadParam * data_lines[DIM];
@@ -90,16 +79,14 @@ void case_2(int * values){
 
     for(int col = 0; col < DIM; col++){
         data_columns[col] = (ThreadParam *)malloc(sizeof(ThreadParam));
-        data_columns[col]->instances = (SudokuInstance*)malloc(sizeof(SudokuInstance)); //Apenas uma instância
-        data_columns[col]->instances[0].matrix = matrix;
+        data_columns[col]->instances = instances;
         data_columns[col]->col = col;
         pthread_create(&ccid[col], NULL, one_column_checker, data_columns[col]);
     }
 
     for(int row = 0; row < DIM; row++){
         data_lines[row] = (ThreadParam *)malloc(sizeof(ThreadParam));
-        data_lines[row]->instances = (SudokuInstance*)malloc(sizeof(SudokuInstance)); //Apenas uma instância
-        data_lines[row]->instances[0].matrix = matrix;
+        data_lines[row]->instances = instances;
         data_lines[row]->line = row;
         pthread_create(&lcid[row], NULL, one_row_checker, data_lines[row]);
     }
@@ -111,8 +98,7 @@ void case_2(int * values){
             int column = j*3; //primeira coluna do quadrado
 
             data_squares[thread_counter] = (ThreadParam *)malloc(sizeof(ThreadParam));
-            data_squares[thread_counter]->instances = (SudokuInstance*)malloc(sizeof(SudokuInstance)); //Apenas uma instância
-            data_squares[thread_counter]->instances[0].matrix = matrix;
+            data_squares[thread_counter]->instances = instances;
             data_squares[thread_counter]->line = line;
             data_squares[thread_counter]->col = column;
             pthread_create(&scid[thread_counter], NULL, square_checker, data_squares[thread_counter]);
@@ -136,11 +122,6 @@ void case_2(int * values){
     }else{
         printf("\033[0;31mO jogo não é válido!\033[0m\n");
     }
-
-    for(int i = 0; i < DIM; i++){
-        free(matrix[i]);
-    }
-    free(matrix);
     free(cc_status);
     free(sc_status);
     free(lc_status);

@@ -34,7 +34,7 @@ void* one_row_checker(void * arg);
 int** initialize_sudoku_matrix(int* values);
 
 
-void destroy_thread_param(ThreadParam* data, bool destroy_matrix);
+void destroy_thread_param(ThreadParam* data, bool destroy_instances);
 
 
 
