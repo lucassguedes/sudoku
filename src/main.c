@@ -11,16 +11,9 @@
  * se a configuração é válida ou não.
  * Última modificação: 4 de abril de 2025
  */
-int resp = SUDOKU_VALID;
 
 int main(int argc, char **argv)
 {
-
-    // SudokuInstance* instances = read_dataset(argv[1]);
-
-    // for(int i = 0; i < MAX_INSTANCES; i++){
-    //     print_instance(&instances[i]);
-    // }
 
     if (argc < 3){
         printf("\033[0;31mERRO:\033[0m Parâmetros insuficientes! Inclua como argumentos o camimho para os dados e um número que represente um caso teste.\n Ex: ./build/bin/sudoku ./sudoku.csv 2\n");
@@ -29,16 +22,14 @@ int main(int argc, char **argv)
     char* data_filepath = argv[1];
     int test_case = atoi(argv[2]);
 
+    
     SudokuInstance* instances = read_dataset(data_filepath);
-
-    print_instance(&instances[0]);
-
+    
     switch(test_case){
         case 1: case_1(instances, MAX_INSTANCES);break;
         case 2: case_2(instances, MAX_INSTANCES); break;
         default: printf("\033[0;31mDigite um caso válido\033[0m\n"); break;
     }
-
 
     for(int i = 0; i < MAX_INSTANCES; i++){
         for(int j = 0; j < DIM; j++){

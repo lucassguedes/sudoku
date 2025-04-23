@@ -46,7 +46,6 @@ void case_1(SudokuInstance* instances, int n_instances){
         pthread_join(scid[i], sc_status[i]);
     }
     
-    
     int n_valid = 0;
     for(int i = 0; i < MAX_INSTANCES; i++){
         if(instances[i].valid){

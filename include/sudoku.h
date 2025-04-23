@@ -9,8 +9,8 @@
 #define DIM 9
 
 enum{
-    SUDOKU_VALID,
-    SUDOKU_INVALID
+    SUDOKU_INVALID,
+    SUDOKU_VALID
 };
 
 /*Esta estrutura contém todos os parâmetros necessários para
@@ -21,9 +21,6 @@ typedef struct{
     int col;
     SudokuInstance* instances; //Lista de instâncias
 }ThreadParam; 
-
-extern int resp;
-
 
 void* all_row_checker(void* arg);
 void* all_column_checker(void* arg);
