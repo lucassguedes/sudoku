@@ -28,6 +28,7 @@ int main(int argc, char **argv)
     switch(test_case){
         case 1: case_1(instances, MAX_INSTANCES);break;
         case 2: case_2(instances, MAX_INSTANCES); break;
+        case 3: case_3(instances, MAX_INSTANCES); break;
         default: printf("\033[0;31mDigite um caso válido\033[0m\n"); break;
     }
 

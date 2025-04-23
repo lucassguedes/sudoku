@@ -8,5 +8,5 @@
 
 void case_1(SudokuInstance* instances, int n_instances);
 void case_2(SudokuInstance* instances, int n_instances);
-
+void case_3(SudokuInstance* instances, int n_instances);
 #endif 

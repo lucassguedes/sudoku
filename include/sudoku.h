@@ -24,10 +24,10 @@ typedef struct{
 
 void* all_row_checker(void* arg);
 void* all_column_checker(void* arg);
-void* square_checker(void * arg);
+void* one_square_checker(void * arg);
 void* one_column_checker(void * arg);
 void* one_row_checker(void * arg);
-
+void all_validations_checker(SudokuInstance * instances);
 int** initialize_sudoku_matrix(int* values);
 
 

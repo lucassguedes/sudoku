@@ -1,4 +1,5 @@
 #include "cases.h"
+#include "sudoku.h"
 
 void case_1(SudokuInstance* instances, int n_instances){
 
@@ -28,7 +29,7 @@ void case_1(SudokuInstance* instances, int n_instances){
 
             data_squares[thread_counter]->line = line;
             data_squares[thread_counter]->col = column;
-            pthread_create(&scid[thread_counter], NULL, square_checker, data_squares[thread_counter]);
+            pthread_create(&scid[thread_counter], NULL, one_square_checker, data_squares[thread_counter]);
 
             thread_counter++;
         }
@@ -102,7 +103,7 @@ void case_2(SudokuInstance* instances, int n_instances){
             data_squares[thread_counter]->instances = instances;
             data_squares[thread_counter]->line = line;
             data_squares[thread_counter]->col = column;
-            pthread_create(&scid[thread_counter], NULL, square_checker, data_squares[thread_counter]);
+            pthread_create(&scid[thread_counter], NULL, one_square_checker, data_squares[thread_counter]);
             thread_counter++;
         }
     }
@@ -137,4 +138,18 @@ void case_2(SudokuInstance* instances, int n_instances){
         destroy_thread_param(data_lines[i], false);
         destroy_thread_param(data_squares[i], false);
     }
+}
+
+void case_3(SudokuInstance* instances, int n_instances){
+    all_validations_checker(instances);
+
+    int n_valid = 0;
+    for(int i = 0; i < MAX_INSTANCES; i++){
+        if(instances[i].valid){
+            n_valid++;
+        }
+    }
+
+    printf("\033[0;35mInstâncias válidas:\033[0m %d/%d\n", n_valid, MAX_INSTANCES);
+
 }
