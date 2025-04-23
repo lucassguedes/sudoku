@@ -42,7 +42,6 @@ void* all_row_checker(void* arg){
             int valido = row_checker(data, i);
             if(!valido){
                 data->instances[i].valid = SUDOKU_INVALID;
-                resp = SUDOKU_INVALID;
             }
         }
     }
@@ -66,7 +65,6 @@ void* all_column_checker(void* arg){
             int valid = column_checker(data, i);
             if(!valid) data->instances[i].valid = SUDOKU_INVALID;
         }
-        
     }
     pthread_exit(0);
 }
@@ -96,7 +94,6 @@ void* all_column_checker(void* arg){
                 if(square_status & (int)pow(2,matrix[i][j] - 1)){
                     printf("\033[0;31mO quadrado %d é inválido!\033[0m\n", which_square(line, col)+1);
                     data->instances[instance].valid = SUDOKU_INVALID;
-                   
                 }
                 square_status |= (int)pow(2,matrix[i][j] -1);
             }
@@ -132,9 +129,8 @@ void* all_column_checker(void* arg){
     ThreadParam * data = (ThreadParam*)arg;
     for(int i = 0; i < MAX_INSTANCES; i++){
         int valid = row_checker(data, i);
-        if(!valid) resp = SUDOKU_INVALID;
+        if(!valid) data->instances[i].valid = SUDOKU_INVALID;
     }
-   
     pthread_exit(0);
  }
 
