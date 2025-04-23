@@ -52,7 +52,7 @@ void case_1(SudokuInstance* instances, int n_instances){
             n_valid++;
         }
     }
-    printf("\033[0;35mInstâncias válidas:\033[0m %d/%d\n", n_instances, MAX_INSTANCES);
+    printf("\033[0;35mInstâncias válidas:\033[0m %d/%d\n", n_valid, MAX_INSTANCES);
     
     destroy_thread_param(data, false);
     free(lc_status);
@@ -125,7 +125,7 @@ void case_2(SudokuInstance* instances, int n_instances){
         }
     }
 
-    printf("\033[0;35mInstâncias válidas:\033[0m %d/%d\n", n_instances, MAX_INSTANCES);
+    printf("\033[0;35mInstâncias válidas:\033[0m %d/%d\n", n_valid, MAX_INSTANCES);
 
 
     free(cc_status);
