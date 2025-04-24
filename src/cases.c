@@ -112,6 +112,12 @@ void case_2(SudokuInstance* instances, int n_instances){
     void ** lc_status = (void **)malloc(sizeof(void*)*DIM);
     void ** sc_status = (void **)malloc(sizeof(void *)*DIM);
 
+    for(int i = 0; i < DIM; i++){
+        cc_status[i] = NULL;
+        lc_status[i] = NULL;
+        sc_status[i] = NULL;
+    }
+
 
     for (int i = 0; i < DIM; i++) {
         pthread_join(ccid[i], cc_status[i]);
