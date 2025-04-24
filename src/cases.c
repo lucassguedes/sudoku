@@ -35,16 +35,10 @@ void case_1(SudokuInstance* instances, int n_instances){
         }
     }
 
-    void *lc_status = NULL;
-    void *cc_status = NULL;
-    void ** sc_status = (void **)malloc(sizeof(void *)*DIM);
-
-    for(int i = 0; i < DIM; i++)sc_status[i] = NULL;
-
-    pthread_join(lcid, &lc_status);
-    pthread_join(ccid, &cc_status);
+    pthread_join(lcid, NULL);
+    pthread_join(ccid, NULL);
     for (int i = 0; i < DIM; i++) {
-        pthread_join(scid[i], sc_status[i]);
+        pthread_join(scid[i], NULL);
     }
     
     int n_valid = 0;
@@ -56,12 +50,6 @@ void case_1(SudokuInstance* instances, int n_instances){
     printf("\033[0;35mInstâncias válidas:\033[0m %d/%d\n", n_valid, MAX_INSTANCES);
     
     destroy_thread_param(data, false);
-    free(lc_status);
-    free(cc_status);
-    for(int i = 0; i < DIM; i++)
-        free(sc_status[i]);
-    free(sc_status);
-
     for(int i = 0; i < DIM; i++)
         destroy_thread_param(data_squares[i], false);
     
@@ -108,21 +96,10 @@ void case_2(SudokuInstance* instances, int n_instances){
         }
     }
 
-    void ** cc_status = (void **)malloc(sizeof(void *)*DIM);
-    void ** lc_status = (void **)malloc(sizeof(void*)*DIM);
-    void ** sc_status = (void **)malloc(sizeof(void *)*DIM);
-
-    for(int i = 0; i < DIM; i++){
-        cc_status[i] = NULL;
-        lc_status[i] = NULL;
-        sc_status[i] = NULL;
-    }
-
-
     for (int i = 0; i < DIM; i++) {
-        pthread_join(ccid[i], cc_status[i]);
-        pthread_join(lcid[i], lc_status[i]);
-        pthread_join(scid[i], sc_status[i]);
+        pthread_join(ccid[i], NULL);
+        pthread_join(lcid[i], NULL);
+        pthread_join(scid[i], NULL);
     }
 
     int n_valid = 0;
@@ -133,11 +110,6 @@ void case_2(SudokuInstance* instances, int n_instances){
     }
 
     printf("\033[0;35mInstâncias válidas:\033[0m %d/%d\n", n_valid, MAX_INSTANCES);
-
-
-    free(cc_status);
-    free(sc_status);
-    free(lc_status);
 
 
     for(int i = 0; i < DIM; i++){
