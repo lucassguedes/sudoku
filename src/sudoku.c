@@ -261,6 +261,6 @@ void all_validations_checker(SudokuInstance * instances){
                 if(!valid) data->instances[instance].valid = SUDOKU_INVALID;
             }
         }
-
     }
+    free(data);
 }

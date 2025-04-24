@@ -33,9 +33,4 @@ int** initialize_sudoku_matrix(int* values);
 
 void destroy_thread_param(ThreadParam* data, bool destroy_instances);
 
-
-
-
-
-
 #endif 

@@ -43,7 +43,7 @@ void case_1(SudokuInstance* instances, int n_instances){
 
     pthread_join(lcid, &lc_status);
     pthread_join(ccid, &cc_status);
-    for (int i = 0; i < 9; i++) {
+    for (int i = 0; i < DIM; i++) {
         pthread_join(scid[i], sc_status[i]);
     }
     
@@ -108,12 +108,12 @@ void case_2(SudokuInstance* instances, int n_instances){
         }
     }
 
-    void ** cc_status = (void **)malloc(sizeof(void *)*9);
-    void ** lc_status = (void **)malloc(sizeof(void*)*9);
-    void ** sc_status = (void **)malloc(sizeof(void *)*9);
+    void ** cc_status = (void **)malloc(sizeof(void *)*DIM);
+    void ** lc_status = (void **)malloc(sizeof(void*)*DIM);
+    void ** sc_status = (void **)malloc(sizeof(void *)*DIM);
 
 
-    for (int i = 0; i < 9; i++) {
+    for (int i = 0; i < DIM; i++) {
         pthread_join(ccid[i], cc_status[i]);
         pthread_join(lcid[i], lc_status[i]);
         pthread_join(scid[i], sc_status[i]);
@@ -132,6 +132,7 @@ void case_2(SudokuInstance* instances, int n_instances){
     free(cc_status);
     free(sc_status);
     free(lc_status);
+
 
     for(int i = 0; i < DIM; i++){
         destroy_thread_param(data_columns[i], false);

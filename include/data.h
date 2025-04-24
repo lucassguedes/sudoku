@@ -5,7 +5,7 @@
 #include <stdio.h>
 
 #define DIM 9
-#define MAX_INSTANCES 10
+#define MAX_INSTANCES 1000000
 
 typedef struct {
     bool valid; /*Indica se a instância é ou não válida*/
