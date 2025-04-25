@@ -12,7 +12,7 @@
 
 ## Threads por caso de teste
 
-| Qt Threads             | Caso 1               | Caso 2            | Caso 3               | 
+| Qt. Threads            | Caso 1               | Caso 2            | Caso 3               | 
 |------------------------|----------------------|-------------------|----------------------|
 | Threads para linhas    |           1          |         9         |          0           |
 | Threads para colunas   |           1          |         9         |          0           | 
@@ -20,9 +20,9 @@
 
 ## Tempo gasto por caso
 
-A Tabela apresenta os valores médios de tempo (em segundos) de resolução de uma quantidade definida de instancias em cada caso após 10 execuções de cada caso em um 11th Gen Intel® Core™ i5-11320H × 8.
+A Tabela apresenta os valores médios de tempo (em segundos) de resolução de uma quantidade definida de instâncias em cada caso após 10 execuções, em um 11th Gen Intel® Core™ i5-11320H × 8.
 
-| Qt. instancias   |        Caso 1        |      Caso 2       |       Caso 3         | 
+| Qt. instâncias   |        Caso 1        |      Caso 2       |       Caso 3         | 
 |------------------|----------------------|-------------------|----------------------|
 | 1                |       0.000700       |     0.001569      |      0.000031        |
 | 10000            |       0.049772       |     0.028268      |      0.092676        |
