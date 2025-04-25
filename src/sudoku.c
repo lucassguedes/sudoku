@@ -7,6 +7,7 @@ int column_checker(ThreadParam * data, int instancia);
 int square_checker(ThreadParam* data, int instancia);
 
 /**
+ * Nome: destroy_thread_param
  * Esta   função  serve  para  destruir  estruturas  do  tipo  ThreadParam.
  * O parâmetro destroy_instances determina se as instâncias também deve ser
  * destruídas  (há  casos  em  que elas  não devem ser destruidas, pois são 
@@ -25,14 +26,33 @@ void destroy_thread_param(ThreadParam* data, bool destroy_instances){
     free(data);
 }
 
+/*
+ * Nome: initialize_sudoku_matrix
+ * Esta função serve para incializar a matriz de cada jogo do sudoku
+*/
+int** initialize_sudoku_matrix(int* values){
+    int **matrix = (int **)malloc(sizeof(int *) * DIM);
+
+    int currval_idx = 0;
+    for (int i = 0; i < DIM; i++)
+    {
+        matrix[i] = (int *)malloc(sizeof(int) * DIM);
+        for (int j = 0; j < DIM; j++)
+        {
+            matrix[i][j] = values[currval_idx++];
+        }
+    }
+
+    return matrix;
+}
+
+
 
 /**
  * Nome: all_row_checker
  * Argumentos: ThreadParam* data
  * Descrição: Esta função verifica todas as linhas da matriz
  * do   sudoku   em   busca  de  uma  configuração  inválida. 
- * Retorno:
- * constantes SUDOKU_INVALID ou SUDOKU_VALID.
  */
 void* all_row_checker(void* arg){
     ThreadParam* data = *(ThreadParam**)arg;
@@ -53,9 +73,8 @@ void* all_row_checker(void* arg){
 /**
  * Nome: all_column_checker
  * Argumentos: ThreadParam* data
- * Descrição: Esta função verifica todas as colunas da matriz
- * do   sudoku   em   busca  de  uma  configuração  inválida. 
- * Retorno: 
+ * Descrição: Esta função é usada pela thread para verificar todas 
+ * as colunas da matriz do   sudoku   em   busca  de  uma  configuração  inválida. 
  */
 void* all_column_checker(void* arg){
     ThreadParam* data = *(ThreadParam**)arg;
@@ -71,11 +90,10 @@ void* all_column_checker(void* arg){
 }
 
 /**
- * Nome: square_checker
- * Argumentos: ThreadParam* data, a linha do primeiro elemento do quadrado, a coluna do primeiro elemento do quadrado
- * Descrição: Esta função verifica um quadrado da matriz
+ * Nome: one_square_checker
+ * Argumentos: ThreadParam* data
+ * Descrição: Esta função é usada pela thread para verificar um quadrado da matriz
  * do   sudoku   em   busca  de  uma  configuração  inválida. 
- * Retorno: 
  */
  void* one_square_checker(void * arg){
     ThreadParam* data = (ThreadParam*)arg;
@@ -87,33 +105,11 @@ void* all_column_checker(void* arg){
 
     pthread_exit(0);
  }
- 
- int square_checker(ThreadParam* data, int instancia){
-    int col = data->col;
-    int line = data->line;
-    uint16_t square_status = 0;
-    int** matrix = data->instances[instancia].matrix; 
-    for(int i = line; i < line+3; i++){
-        for(int j = col; j < col+3; j++){
-            /**
-            * Aqui verificamos se o numero atual já foi visto no quadrado.
-            * Fazemos isso através de uma operação AND bitwise.
-            **/
-            if(square_status & (int)pow(2,matrix[i][j] - 1)){
-                printf("\033[0;31mO quadrado %d é inválido!\033[0m\n", which_square(line, col)+1);
-                return SUDOKU_INVALID;
-            }
-            square_status |= (int)pow(2,matrix[i][j] -1);
-        }
-    }
-    return SUDOKU_VALID;
- }
 
 /**
  * Nome: one_column_checker
  * Argumentos: ThreadParam* data
  * Descrição: Esta função será passada para a thread e verifica uma coluna da matriz 
- * Retorno: 
  */
  void * one_column_checker(void * arg){
     ThreadParam * data = (ThreadParam*)arg;
@@ -128,7 +124,6 @@ void* all_column_checker(void* arg){
  * Nome: one_row_checker
  * Argumentos: ThreadParam* data
  * Descrição: Esta função será passada para a thread e verifica uma linha da matriz 
- * Retorno: 
  */
  void * one_row_checker(void * arg){
     ThreadParam * data = (ThreadParam*)arg;
@@ -139,20 +134,40 @@ void* all_column_checker(void* arg){
     pthread_exit(0);
  }
 
-int** initialize_sudoku_matrix(int* values){
-    int **matrix = (int **)malloc(sizeof(int *) * DIM);
 
-    int currval_idx = 0;
-    for (int i = 0; i < DIM; i++)
-    {
-        matrix[i] = (int *)malloc(sizeof(int) * DIM);
-        for (int j = 0; j < DIM; j++)
-        {
-            matrix[i][j] = values[currval_idx++];
+/*
+ * Nome:all_validations_checker
+ * Esta função verifica o jogo do sudoku inteiro em apenas um fluxo,
+ * sendo chamada no caso 3. 
+*/
+void all_validations_checker(SudokuInstance * instances){
+    ThreadParam * data = (ThreadParam *)malloc(sizeof(ThreadParam));
+    data->instances = instances;
+    for(int instance = 0; instance < MAX_INSTANCES; instance++){
+        for(int i = 0; i < DIM; i++){
+            // checa as colunas
+            data->col = i;
+            int valid = column_checker(data, instance);
+            if(!valid) data->instances[instance].valid = SUDOKU_INVALID;
+        }
+        for(int i = 0; i < DIM; i++){
+            // checa as colunas
+            data->line = i;
+            int valid = row_checker(data, instance);
+            if(!valid) data->instances[instance].valid = SUDOKU_INVALID;
+        }
+        for(int i = 0; i < 3; i++){
+            int line = i*3; //primeira linha do quadrado
+            for(int j = 0; j < 3; j++){
+                int column = j*3; //primeira coluna do quadrado
+                data->line = line;
+                data->col = column;
+                int valid = square_checker(data, instance);
+                if(!valid) data->instances[instance].valid = SUDOKU_INVALID;
+            }
         }
     }
-
-    return matrix;
+    free(data);
 }
 
 /**
@@ -160,7 +175,7 @@ int** initialize_sudoku_matrix(int* values){
  * Argumentos: ThreadParam* data
  * Descrição: Esta função verifica uma linha da matriz
  * do   sudoku   em   busca  de  uma  configuração  inválida. 
- * Retorno: Retorna  um  ponteiro  para  int contendo uma das
+ * Retorno: Retorna  um int contendo uma das
  * constantes SUDOKU_INVALID ou SUDOKU_VALID.
  */
 
@@ -208,7 +223,7 @@ int** initialize_sudoku_matrix(int* values){
  * Argumentos: ThreadParam* data
  * Descrição: Esta função verifica uma linha da coluna
  * do   sudoku   em   busca  de  uma  configuração  inválida. 
- * Retorno: Retorna  um  ponteiro  para  int contendo uma das
+ * Retorno: Retorna  um  int contendo uma das
  * constantes SUDOKU_INVALID ou SUDOKU_VALID.
  */
 
@@ -235,32 +250,32 @@ int column_checker(ThreadParam * data, int instancia){
     return SUDOKU_VALID;
 }
 
-void all_validations_checker(SudokuInstance * instances){
-    ThreadParam * data = (ThreadParam *)malloc(sizeof(ThreadParam));
-    data->instances = instances;
-    for(int instance = 0; instance < MAX_INSTANCES; instance++){
-        for(int i = 0; i < DIM; i++){
-            // checa as colunas
-            data->col = i;
-            int valid = column_checker(data, instance);
-            if(!valid) data->instances[instance].valid = SUDOKU_INVALID;
-        }
-        for(int i = 0; i < DIM; i++){
-            // checa as colunas
-            data->line = i;
-            int valid = row_checker(data, instance);
-            if(!valid) data->instances[instance].valid = SUDOKU_INVALID;
-        }
-        for(int i = 0; i < 3; i++){
-            int line = i*3; //primeira linha do quadrado
-            for(int j = 0; j < 3; j++){
-                int column = j*3; //primeira coluna do quadrado
-                data->line = line;
-                data->col = column;
-                int valid = square_checker(data, instance);
-                if(!valid) data->instances[instance].valid = SUDOKU_INVALID;
+ 
+ /**
+ * Nome: square_checker
+ * Argumentos: ThreadParam* data, a linha do primeiro elemento
+ * do quadrado, a coluna do primeiro elemento do quadrado
+ * Descrição: Esta função verifica um quadrado da matriz
+ * do   sudoku   em   busca  de  uma  configuração  inválida. 
+ * Retorno: 
+ */
+ int square_checker(ThreadParam* data, int instancia){
+    int col = data->col;
+    int line = data->line;
+    uint16_t square_status = 0;
+    int** matrix = data->instances[instancia].matrix; 
+    for(int i = line; i < line+3; i++){
+        for(int j = col; j < col+3; j++){
+            /**
+            * Aqui verificamos se o numero atual já foi visto no quadrado.
+            * Fazemos isso através de uma operação AND bitwise.
+            **/
+            if(square_status & (int)pow(2,matrix[i][j] - 1)){
+                printf("\033[0;31mO quadrado %d é inválido!\033[0m\n", which_square(line, col)+1);
+                return SUDOKU_INVALID;
             }
+            square_status |= (int)pow(2,matrix[i][j] -1);
         }
     }
-    free(data);
-}
+    return SUDOKU_VALID;
+ }
