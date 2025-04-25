@@ -48,6 +48,8 @@ int main(int argc, char **argv)
         cont++;
     }
 
+    print_instance(&instances[0]);
+
     
     printf("Time taken: %.6f seconds\n", total_time/10); //printa a média
 
