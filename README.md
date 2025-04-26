@@ -11,7 +11,7 @@
 
 ### Executar
 
-`./build/bin/sudoku nome_do_arquivo caso_teste`
+`./build/bin/sudoku nome_do_arquivo <caso_teste> <numero_de_instancias>`
 
 ## Opção 2: Executando através de um container docker
 
@@ -27,7 +27,7 @@
 
 Dentro da pasta `build`, execute o seguinte comando (substituindo <caso_de_teste> por 1, 2 ou 3):
 
-`./bin/sudoku ../sudoku.csv <caso_de_teste>`
+`./bin/sudoku ../sudoku.csv <caso_de_teste> <numero_de_instancias>`
 
 ## Threads por caso de teste
 

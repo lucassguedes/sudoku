@@ -13,9 +13,9 @@ int square_checker(ThreadParam* data, int instancia);
  * destruídas  (há  casos  em  que elas  não devem ser destruidas, pois são 
  * compartilhadas por múltiplos objetos).
  */
-void destroy_thread_param(ThreadParam* data, bool destroy_instances){
+void destroy_thread_param(ThreadParam* data, int n_instances, bool destroy_instances){
     if(destroy_instances){
-        for(int i = 0; i < MAX_INSTANCES; i++){
+        for(int i = 0; i < n_instances; i++){
             for(int j = 0; j < DIM; j++){
                 free(data->instances[i].matrix[j]);
             }
@@ -56,8 +56,8 @@ int** initialize_sudoku_matrix(int* values){
  */
 void* all_row_checker(void* arg){
     ThreadParam* data = *(ThreadParam**)arg;
-
-    for(int i = 0; i < MAX_INSTANCES; i++){
+    const int n_instances = data->n_instances;
+    for(int i = 0; i < n_instances; i++){
         for(int row = 0; row < DIM; row++){
             data->line = row;
             int valido = row_checker(data, i);
@@ -78,8 +78,8 @@ void* all_row_checker(void* arg){
  */
 void* all_column_checker(void* arg){
     ThreadParam* data = *(ThreadParam**)arg;
-
-    for(int i = 0; i < MAX_INSTANCES; i++){
+    const int n_instances = data->n_instances;
+    for(int i = 0; i < n_instances; i++){
         for(int column = 0; column < DIM; column++){
             data->col = column;
             int valid = column_checker(data, i);
@@ -97,8 +97,8 @@ void* all_column_checker(void* arg){
  */
  void* one_square_checker(void * arg){
     ThreadParam* data = (ThreadParam*)arg;
-
-    for(int instance = 0; instance < MAX_INSTANCES; instance++){
+    const int n_instances = data->n_instances;
+    for(int instance = 0; instance < n_instances; instance++){
         int valid = square_checker(data, instance);
         if(!valid) data->instances[instance].valid = SUDOKU_INVALID;
     }
@@ -113,7 +113,8 @@ void* all_column_checker(void* arg){
  */
  void * one_column_checker(void * arg){
     ThreadParam * data = (ThreadParam*)arg;
-    for(int i = 0; i < MAX_INSTANCES; i++){
+    const int n_instances = data->n_instances;
+    for(int i = 0; i < n_instances; i++){
         int valid = column_checker(data, i);
         if(!valid) data->instances[i].valid = SUDOKU_INVALID;
     }
@@ -127,7 +128,8 @@ void* all_column_checker(void* arg){
  */
  void * one_row_checker(void * arg){
     ThreadParam * data = (ThreadParam*)arg;
-    for(int i = 0; i < MAX_INSTANCES; i++){
+    const int n_instances = data->n_instances;
+    for(int i = 0; i < n_instances; i++){
         int valid = row_checker(data, i);
         if(!valid) data->instances[i].valid = SUDOKU_INVALID;
     }
@@ -140,10 +142,10 @@ void* all_column_checker(void* arg){
  * Esta função verifica o jogo do sudoku inteiro em apenas um fluxo,
  * sendo chamada no caso 3. 
 */
-void all_validations_checker(SudokuInstance * instances){
+void all_validations_checker(SudokuInstance * instances, int n_instances){
     ThreadParam * data = (ThreadParam *)malloc(sizeof(ThreadParam));
     data->instances = instances;
-    for(int instance = 0; instance < MAX_INSTANCES; instance++){
+    for(int instance = 0; instance < n_instances; instance++){
         for(int i = 0; i < DIM; i++){
             // checa as colunas
             data->col = i;

@@ -5,14 +5,13 @@
 #include <stdio.h>
 
 #define DIM 9
-#define MAX_INSTANCES 10
 
 typedef struct {
     bool valid; /*Indica se a instância é ou não válida*/
     int** matrix;
 }SudokuInstance;
 
-SudokuInstance* read_dataset(char* filepath);
+SudokuInstance* read_dataset(char* filepath, int n_instances);
 void            print_instance(SudokuInstance* instance);
 
 

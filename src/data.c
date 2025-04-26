@@ -21,7 +21,7 @@ void add_empty_instance(SudokuInstance** instances, int* size, int* actual_size)
     (*instances)[*size - 1].matrix = create_matrix(DIM);
 }
 
-SudokuInstance* read_dataset(char* filepath){
+SudokuInstance* read_dataset(char* filepath, int n_instances){
     FILE* file = fopen(filepath, "r");
 
     char byte;
@@ -48,7 +48,7 @@ SudokuInstance* read_dataset(char* filepath){
         }
 
         if(byte == '\n'){ /*Se encontrou um final de linha*/
-            if(size == MAX_INSTANCES){
+            if(size == n_instances){
                 break;
             }
             /*Adicionando nova instância à lista de instâncias*/
