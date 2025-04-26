@@ -26,7 +26,7 @@ int main(int argc, char **argv)
     struct timeval start, end;
 
     // lê arquivo
-    SudokuInstance* instances = read_dataset(data_filepath, n_instances);
+    SudokuInstance* instances = read_dataset(data_filepath, &n_instances);
 
     int cont = 0;
     double total_time = 0;

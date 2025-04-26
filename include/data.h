@@ -11,7 +11,7 @@ typedef struct {
     int** matrix;
 }SudokuInstance;
 
-SudokuInstance* read_dataset(char* filepath, int n_instances);
+SudokuInstance* read_dataset(char* filepath, int* n_instances);
 void            print_instance(SudokuInstance* instance);
 
 
