@@ -1,14 +1,33 @@
 # Sudoku Solution Validator
-## Compilar
+
+## Opção 1: Executando a partir do código-fonte
+
+### Compilar
 
 `cmake -B build`
 
 
 `cmake --build build`
 
-## Executar
+### Executar
 
 `./build/bin/sudoku nome_do_arquivo caso_teste`
+
+## Opção 2: Executando através de um container docker
+
+### Baixe a imagem
+
+`docker pull lucassguedes/sudoku`
+
+### Execute a imgem em modo interativo
+
+`docker run -it lucassguedes/sudoku /bin/bash`
+
+### Execute o programa dentro do container
+
+Dentro da pasta `build`, execute o seguinte comando (substituindo <caso_de_teste> por 1, 2 ou 3):
+
+`./bin/sudoku ../sudoku.csv <caso_de_teste>`
 
 ## Threads por caso de teste
 
