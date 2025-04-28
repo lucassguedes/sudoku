@@ -53,8 +53,8 @@ A Tabela apresenta os valores médios de tempo (em segundos) de resolução de u
 
 ## Quem fez o que?
 O projeto foi feito de forma bem conjunta e complementar, então é um pouco difícil fazer a separação.
-O processo de verificação do sudoku foi feito em conjunto
-A criação de diferentes casos foi feita por Ana Cecília
-A criação do leitor de arquivo foi feita por Lucas
+O processo de verificação do sudoku foi feito em conjunto.
+A criação de diferentes casos foi feita por Ana Cecília.
+A criação do leitor de arquivo foi feita por Lucas.
 
 Acho que mais detalhes da separação pode ser melhor observado pelo histórico de commits.
