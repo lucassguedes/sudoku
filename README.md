@@ -1,5 +1,7 @@
 # Sudoku Solution Validator
 
+Projeto focado na implementação e análise da verificação de jogos sudoku com múltiplas threads. O programa lê um arquivo `.csv`e verifica a validez de cada uma das instâncias do sudoku.  Foi realizada a implementação com três casos diferentes, com mais ou menos threads, que pode ser vista em detalhes mais a diante.
+
 ## Opção 1: Executando a partir do código-fonte
 
 ### Compilar
@@ -49,3 +51,10 @@ A Tabela apresenta os valores médios de tempo (em segundos) de resolução de u
 | 1000000          |       3.695505       |     1.925958      |      9.108666        |
 
 
+## Quem fez o que?
+O projeto foi feito de forma bem conjunta e complementar, então é um pouco difícil fazer a separação.
+O processo de verificação do sudoku foi feito em conjunto
+A criação de diferentes casos foi feita por Ana Cecília
+A criação do leitor de arquivo foi feita por Lucas
+
+Acho que mais detalhes da separação pode ser melhor observado pelo histórico de commits.
