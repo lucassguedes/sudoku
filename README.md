@@ -50,6 +50,7 @@ A Tabela apresenta os valores médios de tempo (em segundos) de resolução de u
 | 500000           |       1.857274       |     1.036911      |      4.579158        | 
 | 1000000          |       3.695505       |     1.925958      |      9.108666        |
 
+OBS: o github aceita um arquivo de tamanho limitado, então o repositório não apresenta o arquivo com um milhão de instâncias que foi utilizado, mas você pode o acessar pelo link: [kraggle/sudoku](https://www.kaggle.com/datasets/bryanpark/sudoku)
 
 ## Quem fez o que?
 O projeto foi feito de forma bem conjunta e complementar, então é um pouco difícil fazer a separação.
